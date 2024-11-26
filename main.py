@@ -90,7 +90,8 @@ def main(args):
 ### Training settings
 parser = argparse.ArgumentParser(description='Configurations for Survival Analysis on TCGA Data.')
 ### Checkpoint + Misc. Pathing Parameters
-parser.add_argument('--data_root_dir',   type=str, default='path/to/data_root_dir', help='Data directory to WSI features (extracted via CLAM')
+parser.add_argument('--data_root_dir',   type=str, default='/data/lichangyong/TCGA_FEATURE', help='Data directory to WSI features (extracted via CLAM)')
+parser.add_argument('--dataset_path',   type=str, default='dataset_csv', help='csv file path')
 parser.add_argument('--seed', 			 type=int, default=1, help='Random seed for reproducible experiment (default: 1)')
 parser.add_argument('--k', 			     type=int, default=5, help='Number of folds (default: 5)')
 parser.add_argument('--k_start',		 type=int, default=-1, help='Start fold (Default: -1, last fold)')
@@ -182,8 +183,9 @@ if 'survival' in args.task:
 		combined_study = 'tcga_lung'
 	else:
 		combined_study = study
-	study_dir = '%s_20x_features' % combined_study
-	dataset = Generic_MIL_Survival_Dataset(csv_path = './%s/%s_all_clean.csv.zip' % (args.dataset_path, combined_study),
+	# study_dir = '%s_20x_features' % combined_study
+	study_dir = '%s' % combined_study.split('_')[1].upper()
+	dataset = Generic_MIL_Survival_Dataset(csv_path = './%s/%s_all_clean.csv' % (args.dataset_path, combined_study),
 										   mode = args.mode,
 										   apply_sig = args.apply_sig,
 										   data_dir= os.path.join(args.data_root_dir, study_dir),

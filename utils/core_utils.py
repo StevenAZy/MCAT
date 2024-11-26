@@ -175,9 +175,9 @@ def train(datasets: tuple, cur: int, args: Namespace):
     print('Done!')
     
     print('\nInit Loaders...', end=' ')
-    train_loader = get_split_loader(train_split, training=True, testing = args.testing, 
+    train_loader = get_split_loader(train_split, training=True, testing = False, 
         weighted = args.weighted_sample, mode=args.mode, batch_size=args.batch_size)
-    val_loader = get_split_loader(val_split,  testing = args.testing, mode=args.mode, batch_size=args.batch_size)
+    val_loader = get_split_loader(val_split,  testing = False, mode=args.mode, batch_size=args.batch_size)
     print('Done!')
 
     print('\nSetup EarlyStopping...', end=' ')
