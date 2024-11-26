@@ -1,9 +1,7 @@
-from __future__ import print_function
+# from __future__ import print_function
 
 import argparse
-import pdb
 import os
-import math
 import sys
 from timeit import default_timer as timer
 
@@ -11,17 +9,13 @@ import numpy as np
 import pandas as pd
 
 ### Internal Imports
-from datasets.dataset_survival import Generic_WSI_Survival_Dataset, Generic_MIL_Survival_Dataset
-from utils.file_utils import save_pkl, load_pkl
+from datasets.dataset_survival import Generic_MIL_Survival_Dataset
+from utils.file_utils import save_pkl
 from utils.core_utils import train
 from utils.utils import get_custom_exp_code
 
 ### PyTorch Imports
 import torch
-import torch.nn as nn
-import torch.nn.functional as F
-from torch.utils.data import DataLoader, sampler
-
 
 def main(args):
 	#### Create Results Directory
@@ -209,7 +203,8 @@ if not os.path.isdir(args.results_dir):
 	os.mkdir(args.results_dir)
 
 ### Appends to the results_dir path: 1) which splits were used for training (e.g. - 5foldcv), and then 2) the parameter code and 3) experiment code
-args.results_dir = os.path.join(args.results_dir, args.which_splits, args.param_code, str(args.exp_code) + '_s{}'.format(args.seed))
+# args.results_dir = os.path.join(args.results_dir, args.which_splits, args.param_code, str(args.exp_code) + '_s{}'.format(args.seed))
+args.results_dir = os.path.join(args.results_dir, args.model_type, f'{args.split_dir}_{args.seed}')
 if not os.path.isdir(args.results_dir):
 	os.makedirs(args.results_dir)
 
