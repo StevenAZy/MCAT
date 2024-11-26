@@ -1,9 +1,7 @@
-from __future__ import print_function
+# from __future__ import print_function
 
 import argparse
-import pdb
 import os
-import math
 import sys
 from timeit import default_timer as timer
 
@@ -11,17 +9,13 @@ import numpy as np
 import pandas as pd
 
 ### Internal Imports
-from datasets.dataset_survival import Generic_WSI_Survival_Dataset, Generic_MIL_Survival_Dataset
-from utils.file_utils import save_pkl, load_pkl
+from datasets.dataset_survival import Generic_MIL_Survival_Dataset
+from utils.file_utils import save_pkl
 from utils.core_utils import train
 from utils.utils import get_custom_exp_code
 
 ### PyTorch Imports
 import torch
-import torch.nn as nn
-import torch.nn.functional as F
-from torch.utils.data import DataLoader, sampler
-
 
 def main(args):
 	#### Create Results Directory
@@ -90,7 +84,8 @@ def main(args):
 ### Training settings
 parser = argparse.ArgumentParser(description='Configurations for Survival Analysis on TCGA Data.')
 ### Checkpoint + Misc. Pathing Parameters
-parser.add_argument('--data_root_dir',   type=str, default='path/to/data_root_dir', help='Data directory to WSI features (extracted via CLAM')
+parser.add_argument('--data_root_dir',   type=str, default='/data/lichangyong/TCGA_FEATURE', help='Data directory to WSI features (extracted via CLAM)')
+parser.add_argument('--dataset_path',   type=str, default='dataset_csv', help='csv file path')
 parser.add_argument('--seed', 			 type=int, default=1, help='Random seed for reproducible experiment (default: 1)')
 parser.add_argument('--k', 			     type=int, default=5, help='Number of folds (default: 5)')
 parser.add_argument('--k_start',		 type=int, default=-1, help='Start fold (Default: -1, last fold)')
@@ -104,7 +99,7 @@ parser.add_argument('--overwrite',     	 action='store_true', default=False, hel
 ### Model Parameters.
 parser.add_argument('--model_type',      type=str, choices=['snn', 'deepset', 'amil', 'mi_fcn', 'mcat'], default='mcat', help='Type of model (Default: mcat)')
 parser.add_argument('--mode',            type=str, choices=['omic', 'path', 'pathomic', 'cluster', 'coattn'], default='coattn', help='Specifies which modalities to use / collate function in dataloader.')
-parser.add_argument('--fusion',          type=str, choices=['None', 'concat', 'bilinear'], default='concat', help='Type of fusion. (Default: concat).')
+parser.add_argument('--fusion',          type=str, choices=['None', 'concat', 'bilinear'], default='None', help='Type of fusion. (Default: concat).')
 parser.add_argument('--apply_sig',		 action='store_true', default=False, help='Use genomic features as signature embeddings.')
 parser.add_argument('--apply_sigfeats',  action='store_true', default=False, help='Use genomic features as tabular features.')
 parser.add_argument('--drop_out',        action='store_true', default=True, help='Enable dropout (p=0.25)')
@@ -182,8 +177,9 @@ if 'survival' in args.task:
 		combined_study = 'tcga_lung'
 	else:
 		combined_study = study
-	study_dir = '%s_20x_features' % combined_study
-	dataset = Generic_MIL_Survival_Dataset(csv_path = './%s/%s_all_clean.csv.zip' % (args.dataset_path, combined_study),
+	# study_dir = '%s_20x_features' % combined_study
+	study_dir = '%s' % combined_study.split('_')[1].upper()
+	dataset = Generic_MIL_Survival_Dataset(csv_path = './%s/%s_all_clean.csv' % (args.dataset_path, combined_study),
 										   mode = args.mode,
 										   apply_sig = args.apply_sig,
 										   data_dir= os.path.join(args.data_root_dir, study_dir),
@@ -207,7 +203,8 @@ if not os.path.isdir(args.results_dir):
 	os.mkdir(args.results_dir)
 
 ### Appends to the results_dir path: 1) which splits were used for training (e.g. - 5foldcv), and then 2) the parameter code and 3) experiment code
-args.results_dir = os.path.join(args.results_dir, args.which_splits, args.param_code, str(args.exp_code) + '_s{}'.format(args.seed))
+# args.results_dir = os.path.join(args.results_dir, args.which_splits, args.param_code, str(args.exp_code) + '_s{}'.format(args.seed))
+args.results_dir = os.path.join(args.results_dir, args.model_type, f'{args.split_dir}_{args.seed}')
 if not os.path.isdir(args.results_dir):
 	os.makedirs(args.results_dir)
 

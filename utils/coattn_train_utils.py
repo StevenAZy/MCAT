@@ -1,12 +1,8 @@
 import numpy as np
 import torch
-import pickle 
 from utils.utils import *
 import os
-from collections import OrderedDict
 
-from argparse import Namespace
-from lifelines.utils import concordance_index
 from sksurv.metrics import concordance_index_censored
 
 

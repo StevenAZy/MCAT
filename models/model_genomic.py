@@ -1,12 +1,5 @@
-from collections import OrderedDict
-from os.path import join
-import pdb
-
-import numpy as np
-
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 
 from models.model_utils import *
 
@@ -17,7 +10,7 @@ from models.model_utils import *
 ##########################
 class SNN(nn.Module):
     def __init__(self, input_dim: int, model_size_omic: str='small', n_classes: int=4):
-        super(MaxNet, self).__init__()
+        super(SNN, self).__init__()
         self.n_classes = n_classes
         self.size_dict_omic = {'small': [256, 256, 256, 256], 'big': [1024, 1024, 1024, 256]}
         
