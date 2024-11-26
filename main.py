@@ -171,15 +171,15 @@ print('\nLoad Dataset')
 if 'survival' in args.task:
 	args.n_classes = 4
 	study = '_'.join(args.task.split('_')[:2])
-	if study == 'tcga_kirc' or study == 'tcga_kirp':
-		combined_study = 'tcga_kidney'
-	elif study == 'tcga_luad' or study == 'tcga_lusc':
-		combined_study = 'tcga_lung'
-	else:
-		combined_study = study
+	# if study == 'tcga_kirc' or study == 'tcga_kirp':
+	# 	combined_study = 'tcga_kidney'
+	# elif study == 'tcga_luad' or study == 'tcga_lusc':
+	# 	combined_study = 'tcga_lung'
+	# else:
+		# combined_study = study
 	# study_dir = '%s_20x_features' % combined_study
-	study_dir = '%s' % combined_study.split('_')[1].upper()
-	dataset = Generic_MIL_Survival_Dataset(csv_path = './%s/%s_all_clean.csv' % (args.dataset_path, combined_study),
+	study_dir = '%s' % study.split('_')[1].upper()
+	dataset = Generic_MIL_Survival_Dataset(csv_path = './%s/%s_all_clean.csv' % (args.dataset_path, study),
 										   mode = args.mode,
 										   apply_sig = args.apply_sig,
 										   data_dir= os.path.join(args.data_root_dir, study_dir),
