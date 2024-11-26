@@ -1,9 +1,6 @@
 from argparse import Namespace
-from collections import OrderedDict
 import os
-import pickle 
 
-from lifelines.utils import concordance_index
 import numpy as np
 from sksurv.metrics import concordance_index_censored
 

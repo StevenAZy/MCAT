@@ -1,20 +1,13 @@
-from __future__ import print_function, division
-import math
+# from __future__ import print_function, division
 import os
-import pdb
 import pickle
-import re
 
-import h5py
 import numpy as np
 import pandas as pd
-from scipy import stats
 from sklearn.preprocessing import StandardScaler
 
 import torch
 from torch.utils.data import Dataset
-
-from utils.utils import generate_split, nth
 
 
 class Generic_WSI_Survival_Dataset(Dataset):
@@ -254,7 +247,7 @@ class Generic_MIL_Survival_Dataset(Generic_WSI_Survival_Dataset):
                     path_features = []
                     for slide_id in slide_ids:
                         wsi_path = os.path.join(data_dir, 'pt_files', '{}.pt'.format(slide_id.rstrip('.svs')))
-                        wsi_bag = torch.load(wsi_path)
+                        wsi_bag = torch.load(wsi_path, weights_only=False)
                         path_features.append(wsi_bag)
                     path_features = torch.cat(path_features, dim=0)
                     return (path_features, torch.zeros((1,1)), label, event_time, c)
@@ -264,7 +257,7 @@ class Generic_MIL_Survival_Dataset(Generic_WSI_Survival_Dataset):
                     cluster_ids = []
                     for slide_id in slide_ids:
                         wsi_path = os.path.join(data_dir, 'pt_files', '{}.pt'.format(slide_id.rstrip('.svs')))
-                        wsi_bag = torch.load(wsi_path)
+                        wsi_bag = torch.load(wsi_path, weights_only=False)
                         path_features.append(wsi_bag)
                         cluster_ids.extend(self.fname2ids[slide_id[:-4]+'.pt'])
                     path_features = torch.cat(path_features, dim=0)
@@ -280,7 +273,7 @@ class Generic_MIL_Survival_Dataset(Generic_WSI_Survival_Dataset):
                     path_features = []
                     for slide_id in slide_ids:
                         wsi_path = os.path.join(data_dir, 'pt_files', '{}.pt'.format(slide_id.rstrip('.svs')))
-                        wsi_bag = torch.load(wsi_path)
+                        wsi_bag = torch.load(wsi_path, weights_only=False)
                         path_features.append(wsi_bag)
                     path_features = torch.cat(path_features, dim=0)
                     genomic_features = torch.tensor(self.genomic_features.iloc[idx])
