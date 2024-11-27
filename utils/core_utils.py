@@ -197,7 +197,7 @@ def train(datasets: tuple, cur: int, args: Namespace):
                 stop = validate_survival(cur, epoch, model, val_loader, args.n_classes, early_stopping, monitor_cindex, writer, loss_fn, reg_fn, args.lambda_reg, args.results_dir)
 
     torch.save(model.state_dict(), os.path.join(args.results_dir, "s_{}_checkpoint.pt".format(cur)))
-    model.load_state_dict(torch.load(os.path.join(args.results_dir, "s_{}_checkpoint.pt".format(cur))))
+    model.load_state_dict(torch.load(os.path.join(args.results_dir, "s_{}_checkpoint.pt".format(cur)), weights_only=False))
     results_val_dict, val_cindex = summary_survival(model, val_loader, args.n_classes)
     print('Val c-Index: {:.4f}'.format(val_cindex))
     writer.close()
@@ -336,9 +336,9 @@ def summary_survival(model, loader, n_classes):
         with torch.no_grad():
             hazards, survival, Y_hat, _, _ = model(x_path=data_WSI, x_omic=data_omic)
 
-        risk = np.asscalar(-torch.sum(survival, dim=1).cpu().numpy())
-        event_time = np.asscalar(event_time)
-        c = np.asscalar(c)
+        risk = -torch.sum(survival, dim=1).cpu().numpy().item()
+        event_time = np.array(event_time).item()
+        c = np.array(c).item()
         all_risk_scores[batch_idx] = risk
         all_censorships[batch_idx] = c
         all_event_times[batch_idx] = event_time
